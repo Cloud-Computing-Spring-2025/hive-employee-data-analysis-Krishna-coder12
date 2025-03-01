@@ -91,7 +91,7 @@ SET hive.exec.dynamic.partition.mode = nonstrict;
 
 INSERT OVERWRITE TABLE employees_partitioned PARTITION(department)
 SELECT emp_id, name, age, job_role, salary, project, join_date, department 
-FROM temp_employees;
+FROM employees;
 ```
 
 To verify partitions, run the following command:
