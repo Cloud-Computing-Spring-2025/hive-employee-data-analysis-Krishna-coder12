@@ -1,6 +1,6 @@
 # Employee and Department Data Analysis
 
-### 2. **Dataset Details**
+### **Dataset Details**
 
 Employees.csv
 This dataset contains information about employees, including their department, job role, salary, and project assignment.
