@@ -23,6 +23,7 @@ join_date - Date when the employee joined
 
 department - Department to which the employee belongs (Used for partitioning)
 
+
 Departments.csv
 
 This dataset contains information about different departments in the company.
