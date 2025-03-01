@@ -27,7 +27,7 @@ Creating Tables:
 
 Employee Table,
 ```sql
-CREATE TABLE temp_employees (
+CREATE TABLE employees (
     emp_id INT,
     name STRING,
     age INT,
