@@ -40,7 +40,7 @@ hive
 
 Creating Tables:
 
-Employee Table:
+Employee Table,
 ```sql
 CREATE TABLE temp_employees (
     emp_id INT,
@@ -57,7 +57,7 @@ FIELDS TERMINATED BY ','
 STORED AS TEXTFILE;
 ```
 
-Department Table:
+Department Table,
 ```sql
 CREATE TABLE departments (
     dept_id INT,
@@ -69,7 +69,7 @@ FIELDS TERMINATED BY ','
 STORED AS TEXTFILE;
 ```
 
-Employee_Partitioned Table:
+Employee_Partitioned Table,
 ```sql
 CREATE TABLE employees_partitioned (
     emp_id INT,
@@ -110,91 +110,108 @@ FROM temp_employees;
 ```
 
 To verify partitions, run the following command:
+
 ```sql
 SHOW PARTITIONS employees_partitioned;
 ```
 
 ### 6. **Performed All  Queries**
 
-1) Query:
+1) Query 1:
    
 ```sql
-SELECT COUNT(*) AS total_requests FROM web_server_logs;
+SELECT * FROM employees_partitioned
+WHERE year(join_date) > 2015;
 ```
 
-2) Status Code Analysis:
+2) Query 2:
    
 ```sql
-SELECT status, COUNT(*) AS count FROM web_server_logs GROUP BY status;
+SELECT department, AVG(salary) AS avg_salary
+FROM employees_partitioned
+GROUP BY department;
 ```
 
-3) Most Visited Pages:
+3) Query 3:
+
+```sql
+SELECT * FROM employees_partitioned
+WHERE project = 'Alpha';
+```
+
+4) Query 4:
    
 ```sql
-SELECT url, COUNT(*) AS visits 
-FROM web_server_logs 
-GROUP BY url 
-ORDER BY visits DESC;
+SELECT job_role, COUNT(*) AS employee_count
+FROM employees_partitioned
+GROUP BY job_role;
 ```
 
-4) Traffic Source Analysis:
+5) Query 5:
    
 ```sql
-SELECT user_agent, COUNT(*) AS count 
-FROM web_server_logs 
-GROUP BY user_agent 
-ORDER BY count DESC;
+SELECT e1.*
+FROM employees_partitioned e1
+JOIN (
+    SELECT department, AVG(salary) AS avg_salary
+    FROM employees_partitioned
+    GROUP BY department
+) e2
+ON e1.department = e2.department
+WHERE e1.salary > e2.avg_salary;
 ```
 
-5) Suspicious IP Addresses:
+6) Query 6:
    
 ```sql
-SELECT ip, COUNT(*) AS failed_requests 
-FROM web_server_logs 
-WHERE status IN (404, 500) 
-GROUP BY ip 
-HAVING COUNT(*) > 3;
+SELECT department, COUNT(*) AS employee_count
+FROM employees_partitioned
+GROUP BY department
+ORDER BY employee_count DESC
+LIMIT 1;
 ```
 
-6) Traffic Trend Over Time:
+7) Query 7:
    
 ```sql
-SELECT SUBSTR(`timestamp`, 1, 16) AS minute, COUNT(*) AS request_count 
-FROM web_server_logs 
-GROUP BY SUBSTR(`timestamp`, 1, 16) 
-ORDER BY minute;
+SELECT * FROM employees_partitioned
+WHERE emp_id IS NOT NULL 
+AND name IS NOT NULL
+AND age IS NOT NULL
+AND job_role IS NOT NULL
+AND salary IS NOT NULL
+AND project IS NOT NULL
+AND join_date IS NOT NULL
+AND department IS NOT NULL;
 ```
 
-
-### 7. **Implement Partitioning for Performance Optimization**
-
-Created Partitioned Table:
-
+8) Query 8:
+   
 ```sql
-CREATE TABLE web_logs_partitioned (
-    ip STRING,
-    `timestamp` STRING,
-    url STRING,
-    user_agent STRING
-)
-PARTITIONED BY (status INT)
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ','
-STORED AS TEXTFILE;
+SELECT e.emp_id, e.name, e.age, e.job_role, e.salary, e.project, e.join_date, d.location
+FROM employees_partitioned e
+JOIN departments d
+ON e.department = d.department_name;
 ```
 
-Load Data into Partitioned Table:
-
+9) Query 9:
+   
 ```sql
-SET hive.exec.dynamic.partition.mode=non-strict;
-INSERT INTO TABLE web_logs_partitioned PARTITION (status)
-SELECT ip, timestamp, url, user_agent, status FROM web_server_logs;
+SELECT emp_id, name, department, salary, 
+       RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS salary_rank
+FROM employees_partitioned;
 ```
 
-Verify Partitioning:
-
+10) Query 10:
+   
 ```sql
-SHOW PARTITIONS web_logs_partitioned;
+SELECT emp_id, name, department, salary
+FROM (
+    SELECT emp_id, name, department, salary, 
+           DENSE_RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS rank
+    FROM employees_partitioned
+) ranked
+WHERE rank <= 3;
 ```
 
 ### 8. **Exported Query Results**
@@ -202,8 +219,7 @@ SHOW PARTITIONS web_logs_partitioned;
 Save Output to HDFS:
 
 ```sql
-INSERT OVERWRITE DIRECTORY '/user/hive/output/Total_requests'
-SELECT COUNT(*) FROM web_server_logs;
+INSERT OVERWRITE DIRECTORY '/user/hive/output/Query....'
 ```
 And perform similarly for all the Query Analysis .
 
@@ -229,22 +245,6 @@ To copy the output from HDFS to your local machine:
    exit 
    ```
     ```bash
-    docker cp hive-server:/tmp/output /workspaces/webserver-log-analysis-hive-Krishna-coder12/
+    docker cp hive-server:/tmp/output /workspaces/hive-employee-data-analysis-Krishna-coder12/
     ```
 3. Commit and push to your repo to the github.
-
-### 11. **Challenges Faced **
-
-1.Configuring the Hadoop Cluster: Setting up and initializing the Hadoop cluster within a Docker environment was initially challenging, requiring extensive debugging and fine-tuning.
-
-2.Managing Large Log Files: Processing vast amounts of log data resulted in memory and performance issues, necessitating optimization strategies to enhance efficiency.
-
-3.Optimizing Queries: Ensuring the efficient execution of Hive queries, especially when dealing with partitioning and aggregations, required careful tuning and adjustments.
-
-4.Implementing Partitioning Strategies: Effectively applying dynamic partitioning while maintaining proper partition placement proved to be a complex task.
-
-5.Data Cleaning and Formatting: Addressing inconsistencies in log files, such as missing or malformed entries, added an additional layer of preprocessing work.
-
-6.Extracting Meaningful Insights: Refining queries and analysis techniques iteratively was essential to derive accurate and valuable insights from raw log data.
-
-
