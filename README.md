@@ -5,20 +5,31 @@
 Employees.csv: 
 
 This dataset contains information about employees, including their department, job role, salary, and project assignment.
+
 emp_id - Unique employee ID
+
 name - Employee's full name
+
 age - Employee's age
+
 job_role - Designation of the employee
+
 salary - Annual salary of the employee
+
 project - Assigned project (One of: Alpha, Beta, Gamma, Delta, Omega)
+
 join_date - Date when the employee joined
+
 department - Department to which the employee belongs (Used for partitioning)
 
 Departments.csv
+
 This dataset contains information about different departments in the company.
 
 dept_id - Unique department ID
+
 department_name - Name of the department
+
 location - Location of the department
 
 ## Setup and Execution
