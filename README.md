@@ -1,9 +1,9 @@
 # Employee and Department Data Analysis
 
-Dataset Details
-employees.csv
-This dataset contains information about employees, including their department, job role, salary, and project assignment.
+### 2. **Dataset Details**
 
+Employees.csv
+This dataset contains information about employees, including their department, job role, salary, and project assignment.
 emp_id - Unique employee ID
 name - Employee's full name
 age - Employee's age
@@ -12,7 +12,8 @@ salary - Annual salary of the employee
 project - Assigned project (One of: Alpha, Beta, Gamma, Delta, Omega)
 join_date - Date when the employee joined
 department - Department to which the employee belongs (Used for partitioning)
-departments.csv
+
+Departments.csv
 This dataset contains information about different departments in the company.
 
 dept_id - Unique department ID
@@ -93,7 +94,7 @@ And Run the following command in the Query Tab.
 
 ```sql
 LOAD DATA INPATH '/user/hive/employees.csv' INTO TABLE employees;
-LOAD DATA INPATH '/user/hive/departments.csv' INTO TABLE department;
+LOAD DATA INPATH '/user/hive/departments.csv' INTO TABLE departments;
 ```
 
 ### 5. **Insert Data into Partitioned Table**
