@@ -2,7 +2,8 @@
 
 ### **Dataset Details**
 
-Employees.csv
+Employees.csv: 
+
 This dataset contains information about employees, including their department, job role, salary, and project assignment.
 emp_id - Unique employee ID
 name - Employee's full name
